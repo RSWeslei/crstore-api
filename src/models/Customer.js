@@ -1,8 +1,9 @@
 import DataTypes from "sequelize";
 import { sequelize } from "../config";
+import User from "./User";
 
-const BaseModel = sequelize.define(
-  'nome_tabela',
+const Customer = sequelize.define(
+  'customers',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -18,4 +19,13 @@ const BaseModel = sequelize.define(
   }
 );
 
-export default BaseModel;
+Customer.belongsTo(User, {
+  as: 'user',
+  foreignKey: {
+    name: 'idUser',
+    allowNull: false,
+    field: 'id_user'
+  }
+});
+
+export default Customer;

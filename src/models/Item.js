@@ -1,4 +1,5 @@
-import { DataTypes } from "sequelize";
+import DataTypes from "sequelize";
+import Category from "./Category";
 import { sequelize } from "../config";
 
 const Item = sequelize.define(
@@ -16,6 +17,23 @@ const Item = sequelize.define(
     price: {
       type: DataTypes.NUMERIC(15,2),
       allowNull: false
+    },
+    flavors: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: false
+    },
+    image: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    stock: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     }
   },
   {
@@ -25,5 +43,14 @@ const Item = sequelize.define(
     updatedAt: 'updated_at'
   }
 );
+
+Item.belongsTo(Category, {
+  as: 'category',
+  foreignKey: {
+    name: 'idCategory',
+    allowNull: false,
+    field: 'id_category'
+  }
+});
 
 export default Item;

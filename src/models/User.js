@@ -1,4 +1,4 @@
-import { DataTypes } from "sequelize";
+import DataTypes from "sequelize";
 import { sequelize } from "../config";
 
 const User = sequelize.define(
@@ -35,6 +35,11 @@ const User = sequelize.define(
       type: DataTypes.STRING, // admin ou customer
       allowNull: false,
       defaultValue: 'customer'
+    },
+    cpf: {
+      type: DataTypes.STRING(18),
+      allowNull: false,
+      unique: true
     }
   },
   {

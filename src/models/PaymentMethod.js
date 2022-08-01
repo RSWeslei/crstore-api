@@ -1,13 +1,18 @@
 import DataTypes from "sequelize";
 import { sequelize } from "../config";
 
-const BaseModel = sequelize.define(
-  'nome_tabela',
+const PaymentMethod = sequelize.define(
+  'payment_methods',
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
+    },
+    type: {
+      type: DataTypes.STRING(100),
+      unique: true,
+      allowNull: null
     }
   },
   {
@@ -18,4 +23,4 @@ const BaseModel = sequelize.define(
   }
 );
 
-export default BaseModel;
+export default PaymentMethod;
