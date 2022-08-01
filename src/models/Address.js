@@ -1,16 +1,16 @@
-import DataTypes, { STRING } from "sequelize";
+import DataTypes from "sequelize";
 import { sequelize } from "../config";
 import User from "./User";
 
-const Adress = sequelize.define(
-  'adresses',
+const Address = sequelize.define(
+  'addresses',
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    adress: {
+    address: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -40,8 +40,10 @@ const Adress = sequelize.define(
   }
 );
 
-Adress.belongsTo(User, {
+Address.belongsTo(User, {
   as: 'user',
+  onDelete: 'NO ACTION',
+  onUpdate: 'NO ACTION',
   foreignKey: {
     name: 'idUser',
     allowNull: false,
@@ -49,4 +51,4 @@ Adress.belongsTo(User, {
   }
 });
 
-export default Adress;
+export default Address;

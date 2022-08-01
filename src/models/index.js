@@ -6,6 +6,7 @@ import Order from "./Order";
 import Customer from "./Customer";
 import DeliveryMan from "./DeliveryMan";
 import OrderItem from "./OrderItem";
+import Address from "./Address";
 
 (async () => {
   await Category.sync({ force: true })
@@ -16,4 +17,5 @@ import OrderItem from "./OrderItem";
   await PaymentMethod.sync({ force: true })
   await Order.sync({ force: true })
   await OrderItem.sync({ force: true })
+  await Address.sync({ force: true })
 })();

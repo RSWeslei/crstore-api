@@ -46,6 +46,8 @@ const Item = sequelize.define(
 
 Item.belongsTo(Category, {
   as: 'category',
+  onDelete: 'NO ACTION',
+  onUpdate: 'NO ACTION',
   foreignKey: {
     name: 'idCategory',
     allowNull: false,

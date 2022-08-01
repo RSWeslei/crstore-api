@@ -35,6 +35,8 @@ const Order = sequelize.define(
 
 Order.belongsTo(PaymentMethod, {
   as: 'paymentMethod',
+  onDelete: 'NO ACTION',
+  onUpdate: 'NO ACTION',
   foreignKey: {
     name: 'idPaymentMethod',
     allowNull: false,
@@ -44,6 +46,8 @@ Order.belongsTo(PaymentMethod, {
 
 Order.belongsTo(DeliveryMan, {
   as: 'deliveryMan',
+  onDelete: 'NO ACTION',
+  onUpdate: 'NO ACTION',
   foreignKey: {
     name: 'idDeliveryMan',
     allowNull: false,
@@ -53,6 +57,8 @@ Order.belongsTo(DeliveryMan, {
 
 Order.belongsTo(Customer, {
   as: 'customer',
+  onDelete: 'NO ACTION',
+  onUpdate: 'NO ACTION',
   foreignKey: {
     name: 'idCustomer',
     allowNull: false,
