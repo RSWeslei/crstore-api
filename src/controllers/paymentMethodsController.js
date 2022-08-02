@@ -1,4 +1,4 @@
-import Item from "../models/Item";
+import PaymentMethod from "../models/PaymentMethod";
 
 const get = async (req, res) => {
   try {
@@ -6,20 +6,20 @@ const get = async (req, res) => {
     id = id ? id.toString().replace(/\D/g, '') : null; 
   
     if (!id) {
-      const response = await Item.findAll({})
+      const response = await PaymentMethod.findAll({})
       if (!response[0]) {
         return res.status(200).send({
           type: 'error',
-          message: `Couldn't find a item!`,
+          message: `Couldn't find a payment method!`,
         })
       }
       return res.status(200).send({
         type: 'sucess',
-        message: `Items retrieved successfully!`,
+        message: `Payment methods retrieved successfully!`,
         data: response
       })
     }
-    const response = await Item.findOne({
+    const response = await PaymentMethod.findOne({
       where: {
         id: id
       }
@@ -27,12 +27,12 @@ const get = async (req, res) => {
     if (!response){
       return res.status(200).send({
         type: 'error',
-        message: `Couldn't find an item with id ${id}`,
+        message: `Couldn't find a payment method with id ${id}`,
       })
     }
     return res.status(200).send({
       type: 'sucess',
-      message: `Data of item ${id} retrieved successfully!`,
+      message: `Data of payment method ${id} retrieved successfully!`,
       data: response
     })
   } catch (error) {
@@ -63,25 +63,19 @@ const persist = async (req, res) => {
 
 const create = async (data, res) => 
 {
-  const { name, price, flavors, image, description, stock, idCategory } = data;
-  const response = await Item.create({
-    name: name,
-    price: price,
-    flavors: flavors,
-    image: image,
-    description: description,
-    stock: stock,
-    idCategory: idCategory
+  const { type } = data;
+  const response = await PaymentMethod.create({
+    type: type
   });
   return res.status(200).send({
     type: 'sucess',
-    message: `Item created successfully!`,
+    message: `PaymentMethod created successfully!`,
     data: response
   })
 }
 
 const update = async (id, data, res) => {
-  let response = await Item.findOne({
+  let response = await PaymentMethod.findOne({
       where: {
           id: id
       }
@@ -90,7 +84,7 @@ const update = async (id, data, res) => {
   if (!response) {
     return res.status(400).send({
       type: 'error',
-      message: `Couldn find an item with id ${id} to update!` 
+      message: `Couldn find a payment method with id ${id} to update!` 
     })
   }
   Object.keys(data).forEach(field => {response[field] = data[field]})
@@ -98,7 +92,7 @@ const update = async (id, data, res) => {
   await response.save();
   return res.status(200).send({
     type: 'sucess', 
-    message: `Item ${id} updated successfully!`,
+    message: `PaymentMethod ${id} updated successfully!`,
     data: response
   });
 }
@@ -110,10 +104,10 @@ const destroy = async (req, res) => {
     if (!id) {
       return res.status(400).send({
         type: 'error',
-        message: 'You need send a valid id to delete the item!'
+        message: 'You need send a valid id to delete the payment method!'
       });
     }
-    const response = await Item.findOne({
+    const response = await PaymentMethod.findOne({
       where: {
           id: id
       }
@@ -121,13 +115,13 @@ const destroy = async (req, res) => {
     if (!response) {
       return res.status(400).send({
         type: 'error',
-        message: `Couldn't find an item with id ${id} to delete!` 
+        message: `Couldn't find a payment method with id ${id} to delete!` 
       })
     }
     await response.destroy();
     return res.status(200).send({
       type: 'sucess',
-      message: `Item with id ${id} deleted successfully!`
+      message: `PaymentMethod with id ${id} deleted successfully!`
     })
   } 
   catch (error) {

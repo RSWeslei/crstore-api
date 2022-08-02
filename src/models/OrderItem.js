@@ -4,7 +4,7 @@ import Item from "./Item";
 import Order from "./Order";
 
 const OrderItem = sequelize.define(
-  'order_itens',
+  'order_items',
   {
     id: {
       type: DataTypes.INTEGER,

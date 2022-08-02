@@ -30,8 +30,31 @@ export default async (req, res, next) => {
     }
 
     let onlyAdminPaths = [
+      // Item
       '/items/destroy',
-      '/items/persist'
+      '/items/persist',
+      // User
+      '/users',
+      '/users/:id',
+      '/users/destroy',
+      // Category
+      '/categories/persist',
+      '/categories/destroy',
+      // Address
+      '/addresses/:id',
+      '/addresses',
+      '/addresses/persist',
+      '/addresses/destroy',
+      // Customer
+      '/customers/:id',
+      '/customers',
+      '/customers/persist',
+      '/customers/destroy',
+      // Delivery man
+      '/delivery-men/:id',
+      '/delivery-men',
+      '/delivery-men/persist',
+      '/delivery-men/destroy'
     ];
 
     const user = await User.findOne({
@@ -47,7 +70,7 @@ export default async (req, res, next) => {
       })
     }
 
-    if (onlyAdminPaths.includes(req.route.path) && user.role !== 'admin') {
+    if (user.role !== 'admin' && onlyAdminPaths.includes(req.route.path)) {
       return res.status(200).send({
         type: 'error',
         message: 'Você não tem permissão para acessar esse recurso!'

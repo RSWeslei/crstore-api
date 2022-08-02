@@ -1,4 +1,4 @@
-import Item from "../models/Item";
+import Order from "../models/Order";
 
 const get = async (req, res) => {
   try {
@@ -6,20 +6,20 @@ const get = async (req, res) => {
     id = id ? id.toString().replace(/\D/g, '') : null; 
   
     if (!id) {
-      const response = await Item.findAll({})
+      const response = await Order.findAll({})
       if (!response[0]) {
         return res.status(200).send({
           type: 'error',
-          message: `Couldn't find a item!`,
+          message: `Couldn't find an order!`,
         })
       }
       return res.status(200).send({
         type: 'sucess',
-        message: `Items retrieved successfully!`,
+        message: `Orders retrieved successfully!`,
         data: response
       })
     }
-    const response = await Item.findOne({
+    const response = await Order.findOne({
       where: {
         id: id
       }
@@ -27,12 +27,12 @@ const get = async (req, res) => {
     if (!response){
       return res.status(200).send({
         type: 'error',
-        message: `Couldn't find an item with id ${id}`,
+        message: `Couldn't find an order with id ${id}`,
       })
     }
     return res.status(200).send({
       type: 'sucess',
-      message: `Data of item ${id} retrieved successfully!`,
+      message: `Data of order ${id} retrieved successfully!`,
       data: response
     })
   } catch (error) {
@@ -63,25 +63,24 @@ const persist = async (req, res) => {
 
 const create = async (data, res) => 
 {
-  const { name, price, flavors, image, description, stock, idCategory } = data;
-  const response = await Item.create({
-    name: name,
-    price: price,
-    flavors: flavors,
-    image: image,
-    description: description,
-    stock: stock,
-    idCategory: idCategory
+  const { totalPrice, status, coupon, idPaymentMethod, idDeliveryMan, idCustomer } = data;
+  const response = await Order.create({
+    totalPrice: totalPrice,
+    status: status,
+    coupon: coupon,
+    idPaymentMethod: idPaymentMethod,
+    idDeliveryMan: idDeliveryMan,
+    idCustomer: idCustomer
   });
   return res.status(200).send({
     type: 'sucess',
-    message: `Item created successfully!`,
+    message: `Order created successfully!`,
     data: response
   })
 }
 
 const update = async (id, data, res) => {
-  let response = await Item.findOne({
+  let response = await Order.findOne({
       where: {
           id: id
       }
@@ -90,7 +89,7 @@ const update = async (id, data, res) => {
   if (!response) {
     return res.status(400).send({
       type: 'error',
-      message: `Couldn find an item with id ${id} to update!` 
+      message: `Couldn find an order with id ${id} to update!` 
     })
   }
   Object.keys(data).forEach(field => {response[field] = data[field]})
@@ -98,7 +97,7 @@ const update = async (id, data, res) => {
   await response.save();
   return res.status(200).send({
     type: 'sucess', 
-    message: `Item ${id} updated successfully!`,
+    message: `Order ${id} updated successfully!`,
     data: response
   });
 }
@@ -110,10 +109,10 @@ const destroy = async (req, res) => {
     if (!id) {
       return res.status(400).send({
         type: 'error',
-        message: 'You need send a valid id to delete the item!'
+        message: 'You need send an valid id to delete the order!'
       });
     }
-    const response = await Item.findOne({
+    const response = await Order.findOne({
       where: {
           id: id
       }
@@ -121,13 +120,13 @@ const destroy = async (req, res) => {
     if (!response) {
       return res.status(400).send({
         type: 'error',
-        message: `Couldn't find an item with id ${id} to delete!` 
+        message: `Couldn't find an order with id ${id} to delete!` 
       })
     }
     await response.destroy();
     return res.status(200).send({
       type: 'sucess',
-      message: `Item with id ${id} deleted successfully!`
+      message: `Order with id ${id} deleted successfully!`
     })
   } 
   catch (error) {

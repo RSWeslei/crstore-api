@@ -9,13 +9,13 @@ import OrderItem from "./OrderItem";
 import Address from "./Address";
 
 (async () => {
-  await Category.sync({ force: true })
-  await Customer.sync({ force: true })
-  await DeliveryMan.sync({ force: true })
-  await User.sync({ force: true })
-  await Item.sync({ force: true })
-  await PaymentMethod.sync({ force: true })
-  await Order.sync({ force: true })
-  await OrderItem.sync({ force: true })
-  await Address.sync({ force: true })
+  await User.sync({ force: false })
+  await DeliveryMan.sync({ force: false })
+  await Category.sync({ force: false })
+  await Customer.sync({ force: false })
+  await Item.sync({ force: false })
+  await PaymentMethod.sync({ force: false })
+  await Order.sync({ force: false })
+  await OrderItem.sync({ force: false })
+  await Address.sync({ force: false })
 })();

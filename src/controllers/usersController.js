@@ -2,28 +2,53 @@ import User from "../models/User";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const getAll = async (req, res) => {
+const get = async (req, res) => {
   try {
-    const response = await User.findAll({
-      order: [['id', 'ASC']]
-    });
+    let { id } = req.params;
+    id = id ? id.toString().replace(/\D/g, '') : null; 
+  
+    if (!id) {
+      const response = await User.findAll({})
+      if (!response[0]) {
+        return res.status(200).send({
+          type: 'error',
+          message: `Couldn't find an user!`,
+        })
+      }
+      return res.status(200).send({
+        type: 'sucess',
+        message: `Users retrieved successfully!`,
+        data: response
+      })
+    }
+    const response = await User.findOne({
+      where: {
+        id: id
+      }
+    })
+    if (!response){
+      return res.status(200).send({
+        type: 'error',
+        message: `Couldn't find an user with id ${id}`,
+      })
+    }
     return res.status(200).send({
-      type: 'success', // success, error, warning, info
-      message: 'Registros recuperados com sucesso', // mensagem para o front exibir
-      data: response // json com informações de resposta
-    });
+      type: 'sucess',
+      message: `Data of user ${id} retrieved successfully!`,
+      data: response
+    })
   } catch (error) {
-    return res.status(200).send({
+    return res.status(500).send({
       type: 'error',
-      message: 'Ops! Ocorreu um erro!',
-      data: error
-    });
+      message: 'An error have ocurred!',
+      error: error
+    })
   }
 }
 
 const register = async (req, res) => {
   try {
-    let { username, name, phone, password, role } = req.body;
+    const { username, name, phone, password, role, cpf } = req.body;
 
     let userExists = await User.findOne({
       where: {
@@ -34,37 +59,37 @@ const register = async (req, res) => {
     if (userExists) {
       return res.status(200).send({
         type: 'error',
-        message: 'Já existe um usuário cadastrado com esse username!'
+        message: 'There is already a registered user with this username!'
       });
     }
 
     let passwordHash = await bcrypt.hash(password, 10);
-
     let response = await User.create({
       username,
       name,
       phone,
       passwordHash,
-      role
+      role,
+      cpf
     });
 
     return res.status(200).send({
       type: 'success',
-      message: 'Usuário cadastrastado com sucesso!',
+      message: 'User registered successfully!',
       data: response
     });
   } catch (error) {
-    return res.status(200).send({
+    return res.status(500).send({
       type: 'error',
-      message: 'Ops! Ocorreu um erro!',
-      data: error.message
-    });
+      message: 'An error have ocurred!',
+      error: error.message
+    })
   }
 }
 
 const login = async (req, res) => {
   try {
-    let { username, password } = req.body;
+    const { username, password } = req.body;
 
     let user = await User.findOne({
       where: {
@@ -75,7 +100,7 @@ const login = async (req, res) => {
     if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
       return res.status(200).send({
         type: 'error',
-        message: 'Usuário ou senha incorretos!'
+        message: 'Incorrect username or password!'
       });
     }
 
@@ -90,20 +115,57 @@ const login = async (req, res) => {
 
     return res.status(200).send({
       type: 'success',
-      message: 'Bem-vindo! Login realizado com sucesso!',
+      message: 'Welcome! Login successfully!',
       token
     });
   } catch (error) {
-    return res.status(200).send({
+    return res.status(500).send({
       type: 'error',
-      message: 'Ops! Ocorreu um erro!',
-      data: error
+      message: 'An error have ocurred!',
+      error: error.message
+    })
+  }
+
+}
+const destroy = async (req, res) => {
+  try {
+    let { id } = req.body;
+    id = id ? id.toString().replace(/\D/g, '') : null;
+    if (!id) {
+      return res.status(400).send({
+        type: 'error',
+        message: 'You need send a valid id to delete the user!'
+      });
+    }
+    const response = await User.findOne({
+      where: {
+          id: id
+      }
     });
+    if (!response) {
+      return res.status(400).send({
+        type: 'error',
+        message: `Couldn't find an user with id ${id} to delete!` 
+      })
+    }
+    await response.destroy();
+    return res.status(200).send({
+      type: 'sucess',
+      message: `User with id ${id} deleted successfully!`
+    })
+  } 
+  catch (error) {
+    return res.status(500).send({
+      type: 'error',
+      message: 'An error have ocurred!',
+      error: error
+    })
   }
 }
 
 export default {
-  getAll,
+  get,
   register,
-  login
+  login,
+  destroy
 }

@@ -13,7 +13,7 @@ const Order = sequelize.define(
       autoIncrement: true
     },
     totalPrice: {
-      type: DataTypes.FLOAT(15, 2),
+      type: DataTypes.NUMERIC(15, 2),
       allowNull: false
     },
     status: {

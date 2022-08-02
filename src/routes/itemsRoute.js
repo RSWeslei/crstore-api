@@ -2,11 +2,8 @@ import controller from '../controllers/itemsController'
 import Authenticate from '../utils/Authenticate'
 
 export default (app) => {
-	app.get('/itens/:id', /*Authenticate,*/ controller.getById)
-	app.get('/itens', /*Authenticate,*/ controller.getAll)
-	app.post('/itens/persist', /*Authenticate,*/ controller.persist)
-	app.post('/itens/destroy', /*Authenticate,*/ controller.destroy)
+	app.post('/items/persist', Authenticate, controller.persist)
+	app.post('/items/destroy', Authenticate, controller.destroy)
+	app.get('/items', controller.get)
+	app.get('/items/:id', controller.get)
 }
-/*
-A	DW
-*/

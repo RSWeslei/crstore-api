@@ -11,7 +11,7 @@ const DeliveryMan = sequelize.define(
       autoIncrement: true
     },
     balance: {
-      type: DataTypes.FLOAT(15, 2),
+      type: DataTypes.NUMERIC(15, 2),
       defaultValue: 0.00
     }
   },
