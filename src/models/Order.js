@@ -14,7 +14,8 @@ const Order = sequelize.define(
     },
     totalPrice: {
       type: DataTypes.NUMERIC(15, 2),
-      allowNull: false
+      allowNull: false,
+      field: 'total_price'
     },
     status: {
       type: DataTypes.STRING,

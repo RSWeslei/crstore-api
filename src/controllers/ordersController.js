@@ -63,6 +63,16 @@ const persist = async (req, res) => {
 
 const create = async (data, res) => 
 {
+
+  // let user = await validateUser.getUserByToken(req.headers.authorization)
+
+  // if (!user) {
+  //   return res.status(500).send({
+  //     type: 'error',
+  //     message: `An error have ocurred!`,
+  //   })
+  // }
+
   const { totalPrice, status, coupon, idPaymentMethod, idDeliveryMan, idCustomer } = data;
   const response = await Order.create({
     totalPrice: totalPrice,

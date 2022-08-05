@@ -40,6 +40,10 @@ const User = sequelize.define(
       type: DataTypes.STRING(18),
       allowNull: false,
       unique: true
+    },
+    cartItems: {
+      type: DataTypes.JSONB,
+      allowNull: true
     }
   },
   {

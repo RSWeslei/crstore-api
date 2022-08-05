@@ -1,4 +1,6 @@
+import Item from "../models/Item";
 import OrderItem from "../models/OrderItem";
+import validateUser from "../utils/validateUser";
 
 const get = async (req, res) => {
   try {
@@ -63,7 +65,16 @@ const persist = async (req, res) => {
 
 const create = async (data, res) => 
 {
-  const { quantity, price, observation, idItem, idOrder } = data;
+
+  const { quantity, observation, idItem, idOrder } = data;
+
+  const item = await Item.findOne({
+    where: {
+      id: idItem
+    }
+  })
+  let price = item.price;
+  
   const response = await OrderItem.create({
     quantity: quantity,
     price: price,
