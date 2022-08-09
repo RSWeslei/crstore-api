@@ -18,10 +18,6 @@ const Item = sequelize.define(
       type: DataTypes.NUMERIC(15,2),
       allowNull: false
     },
-    flavors: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: false
-    },
     image: {
       type: DataTypes.STRING,
       allowNull: true

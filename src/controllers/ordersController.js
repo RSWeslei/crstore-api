@@ -73,6 +73,8 @@ const create = async (data, res) =>
   //   })
   // }
 
+  // let { totalPrice, status, coupon, idPaymentMethod, idDeliveryMan} = data
+
   const { totalPrice, status, coupon, idPaymentMethod, idDeliveryMan, idCustomer } = data;
   const response = await Order.create({
     totalPrice: totalPrice,

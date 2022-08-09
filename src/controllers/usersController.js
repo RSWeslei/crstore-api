@@ -185,8 +185,17 @@ const persistCart = async (req, res) => {
     let exist = false
     for (const item of cartItems) {
       if (item.itemId == req.body.itemId){
-        let quantity = Number(item.quantity) + Number(req.body.quantity)
-        item.quantity = quantity
+        let quantity = 0
+        if (req.body.type == 'merge'){
+          quantity = Number(req.body.savedQtd)
+          console.log(req.body);
+        }
+        else {
+          quantity = Number(item.quantity) + Number(req.body.quantity)
+        }
+        item.quantity = quantity,
+        item.image = req.body.image,
+        item.name = req.body.name
         exist = true
         break
       }
@@ -194,7 +203,8 @@ const persistCart = async (req, res) => {
     if (!exist){
       cartItems.push(req.body);
     }
-    user.cartItems = cartItems;
+    user.cartItems 
+    = cartItems;
     user.save();
     return res.status(200).send({
       type: 'sucess',

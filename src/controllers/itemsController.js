@@ -44,6 +44,34 @@ const get = async (req, res) => {
   }
 }
 
+const getPriceById = async (req, res) => {
+  try {
+    const { id } = req.params
+    if (!id) {
+      return res.status(200).send({
+        type: 'error',
+        message: `Couldn't find an item with id ${id}`,
+      })
+    }
+    const item = await Item.findOne({
+      where: {
+        id: id
+      }
+    })
+    return res.status(200).send({
+      type: 'sucess',
+      message: `Price of item ${id} retrieved successfully!`,
+      data: item.price
+    })
+  } catch (error) {
+    return res.status(500).send({
+      type: 'error',
+      message: 'An error have ocurred!',
+      error: error
+    })
+  }
+}
+
 const persist = async (req, res) => {
   try {
     const { id } = req.body;
@@ -63,11 +91,10 @@ const persist = async (req, res) => {
 
 const create = async (data, res) => 
 {
-  const { name, price, flavors, image, description, stock, idCategory } = data;
+  const { name, price, image, description, stock, idCategory } = data;
   const response = await Item.create({
     name: name,
     price: price,
-    flavors: flavors,
     image: image,
     description: description,
     stock: stock,
@@ -142,5 +169,6 @@ const destroy = async (req, res) => {
 export default {
   get,
   persist,
-  destroy
+  destroy,
+  getPriceById
 }

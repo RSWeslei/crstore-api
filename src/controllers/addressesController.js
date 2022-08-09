@@ -1,12 +1,25 @@
 import Address from "../models/Address";
+import validateUser from "../utils/validateUser";
 
 const get = async (req, res) => {
   try {
+    let user = await validateUser.getUserByToken(req.headers.authorization)
+    if (!user) {
+      return res.status(500).send({
+        type: 'error',
+        message: `An error have ocurred!`,
+      })
+    }
+
     let { id } = req.params;
     id = id ? id.toString().replace(/\D/g, '') : null; 
   
     if (!id) {
-      const response = await Address.findAll({})
+      const response = await Address.findAll({
+        where: {
+          idUser: user.id
+        }
+      })
       if (!response[0]) {
         return res.status(200).send({
           type: 'error',
@@ -21,7 +34,8 @@ const get = async (req, res) => {
     }
     const response = await Address.findOne({
       where: {
-        id: id
+        id: id,
+        idUser: user.id
       }
     })
     if (!response){
@@ -39,7 +53,7 @@ const get = async (req, res) => {
     return res.status(500).send({
       type: 'error',
       message: 'An error have ocurred!',
-      error: error
+      error: error.message
     })
   }
 }
