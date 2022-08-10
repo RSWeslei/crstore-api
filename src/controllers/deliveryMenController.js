@@ -63,10 +63,11 @@ const persist = async (req, res) => {
 
 const create = async (data, res) => 
 {
-  const { balance, idUser } = data;
+  const { balance, idUser, avaliable } = data;
   const response = await DeliveryMan.create({
     idUser: idUser,
-    balance: balance
+    balance: balance,
+    avaliable: avaliable
   });
   return res.status(200).send({
     type: 'sucess',

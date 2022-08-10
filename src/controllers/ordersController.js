@@ -1,4 +1,6 @@
+import Item from "../models/Item";
 import Order from "../models/Order";
+import validateUser from "../utils/validateUser";
 
 const get = async (req, res) => {
   try {
@@ -48,7 +50,7 @@ const persist = async (req, res) => {
   try {
     const { id } = req.body;
     if (!id) {
-      return await create(req.body, res)
+      return await create(req, res)
     }
     return await update(id, req.body, res)
   } 
@@ -56,26 +58,48 @@ const persist = async (req, res) => {
     return res.status(500).send({
       type: 'error',
       message: 'An error have ocurred!',
-      error: error
+      error: error.message
     })
   }
 }
 
 const create = async (data, res) => 
 {
+  let user = await validateUser.getUserByToken(data.headers.authorization)
+  
+  if (!user) {
+    return res.status(500).send({
+      type: 'error',
+      message: `An error have ocurred!`,
+    })
+  }
 
-  // let user = await validateUser.getUserByToken(req.headers.authorization)
+  let { totalPrice, status, coupon, idPaymentMethod, idDeliveryMan, idCustomer } = data.body;
 
-  // if (!user) {
-  //   return res.status(500).send({
-  //     type: 'error',
-  //     message: `An error have ocurred!`,
-  //   })
-  // }
+  let cartItems = await user.cartItems
+  let totalPriceDb = 0
+  for (const item of cartItems) {
+    console.log(item.itemId);
+    let itemDb = await Item.findOne({
+      where: {
+        id: item.itemId
+      }
+    })
+    totalPriceDb += Number(itemDb.price) * Number(item.quantity)
+  }
+
+  if (totalPrice != totalPriceDb) {
+    return res.status(200).send({
+      type: 'error',
+      message: `Algo deu errado...`,
+    })
+  }
+  
+  console.log("\n\n\n" + totalPriceDb);
+  status = idPaymentMethod == 1 ? 'Pendente' : idPaymentMethod == 2 ? 'Pago' : 'Pago'
 
   // let { totalPrice, status, coupon, idPaymentMethod, idDeliveryMan} = data
 
-  const { totalPrice, status, coupon, idPaymentMethod, idDeliveryMan, idCustomer } = data;
   const response = await Order.create({
     totalPrice: totalPrice,
     status: status,

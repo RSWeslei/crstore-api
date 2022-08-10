@@ -13,6 +13,10 @@ const DeliveryMan = sequelize.define(
     balance: {
       type: DataTypes.NUMERIC(15, 2),
       defaultValue: 0.00
+    },
+    avaliable: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
     }
   },
   {
