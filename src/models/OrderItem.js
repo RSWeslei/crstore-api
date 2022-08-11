@@ -34,25 +34,25 @@ const OrderItem = sequelize.define(
 
 Order.belongsToMany(Item, {
   through: OrderItem,
-  as: 'item',
-  onDelete: 'NO ACTION',
-  onUpdate: 'NO ACTION',
-  foreignKey: {
-    name: 'idItem',
-    allowNull: false,
-    field: 'id_item'
-  }
-});
-
-Item.belongsToMany(Order, {
-  through: OrderItem,
-  as: 'order',
+  as: 'items',
   onDelete: 'NO ACTION',
   onUpdate: 'NO ACTION',
   foreignKey: {
     name: 'idOrder',
     allowNull: false,
     field: 'id_order'
+  }
+});
+
+Item.belongsToMany(Order, {
+  through: OrderItem,
+  as: 'orders',
+  onDelete: 'NO ACTION',
+  onUpdate: 'NO ACTION',
+  foreignKey: {
+    name: 'idItem',
+    allowNull: false,
+    field: 'id_item'
   }
 });
 

@@ -1,5 +1,6 @@
 import controller from '../controllers/usersController'
 import Authenticate from '../utils/Authenticate'
+import validateUser from '../utils/validateUser'
 
 export default (app) => {
 	app.post('/users/persistCart', Authenticate, controller.persistCart)
@@ -9,4 +10,5 @@ export default (app) => {
 	app.post('/users/destroy', Authenticate, controller.destroy)
 	app.get('/users', Authenticate, controller.get)
 	app.get('/users/:id', Authenticate, controller.get)
+	app.get('/users/validate-token', validateUser.validateUserToken)
 }

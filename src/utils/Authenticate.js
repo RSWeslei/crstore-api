@@ -34,21 +34,16 @@ export default async (req, res, next) => {
       '/items/destroy',
       '/items/persist',
       // User
-      '/users',
+      // '/users',
       '/users/:id',
       '/users/destroy',
       // Category
       '/categories/persist',
       '/categories/destroy',
       // Address
-      '/addresses/:id',
-      '/addresses',
-      '/addresses/persist',
-      '/addresses/destroy',
       // Customer
-      '/customers/:id',
-      '/customers',
-      '/customers/persist',
+      // '/customers/:id',
+      // '/customers',
       '/customers/destroy',
       // Delivery man
       '/delivery-men/:id',

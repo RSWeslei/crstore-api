@@ -1,5 +1,8 @@
+import Customer from "../models/Customer";
+import DeliveryMan from "../models/DeliveryMan";
 import Item from "../models/Item";
 import Order from "../models/Order";
+import OrderItem from "../models/OrderItem";
 import validateUser from "../utils/validateUser";
 
 const get = async (req, res) => {
@@ -74,12 +77,11 @@ const create = async (data, res) =>
     })
   }
 
-  let { totalPrice, status, coupon, idPaymentMethod, idDeliveryMan, idCustomer } = data.body;
+  let { totalPrice, status, coupon, idPaymentMethod } = data.body;
 
   let cartItems = await user.cartItems
   let totalPriceDb = 0
   for (const item of cartItems) {
-    console.log(item.itemId);
     let itemDb = await Item.findOne({
       where: {
         id: item.itemId
@@ -95,24 +97,71 @@ const create = async (data, res) =>
     })
   }
   
-  console.log("\n\n\n" + totalPriceDb);
   status = idPaymentMethod == 1 ? 'Pendente' : idPaymentMethod == 2 ? 'Pago' : 'Pago'
 
-  // let { totalPrice, status, coupon, idPaymentMethod, idDeliveryMan} = data
+  const deliverymen = await DeliveryMan.findAll({
+    where: {
+      avaliable: true
+    }
+  })
 
-  const response = await Order.create({
+  const rand = Math.floor(Math.random() * deliverymen.length);
+  let idCustomer = await Customer.findOne({
+    where: {
+      idUser: user.id
+    }
+  })
+
+  const order = await Order.create({
     totalPrice: totalPrice,
     status: status,
     coupon: coupon,
     idPaymentMethod: idPaymentMethod,
-    idDeliveryMan: idDeliveryMan,
-    idCustomer: idCustomer
+    idDeliveryMan: deliverymen[rand].id,
+    idCustomer: idCustomer.id
   });
+
+  for (const item of cartItems) {
+    let itemDb = await Item.findOne({
+      where: {
+        id: item.itemId
+      }
+    })
+    itemDb.stock -= item.quantity
+    if (itemDb.stock < 0) {
+      return res.status(500).send({
+        type: 'error',
+        message: `O produto está sem estoque!!`,
+      })
+    }
+    console.log(item.quantity, itemDb.price, itemDb.id, order.id);
+    let orderItem = await OrderItem.create({
+      quantity: item.quantity,
+      price: itemDb.price,
+      observation: 'Nada a observar',
+      idItem: itemDb.id,
+      idOrder: order.id
+    })
+    if (!orderItem) {
+      return res.status(500).send({
+        type: 'error',
+        message: `erro!`,
+      })
+    
+    }
+    await orderItem.save()
+    await itemDb.save()
+  }
+
+  user.cartItems = []
+  await user.save()
+
   return res.status(200).send({
     type: 'sucess',
     message: `Order created successfully!`,
-    data: response
+    data: order
   })
+
 }
 
 const update = async (id, data, res) => {
