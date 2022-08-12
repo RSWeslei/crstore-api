@@ -91,20 +91,28 @@ const persist = async (req, res) => {
 
 const create = async (data, res) => 
 {
-  const { name, price, image, description, stock, idCategory } = data;
-  const response = await Item.create({
-    name: name,
-    price: price,
-    image: image,
-    description: description,
-    stock: stock,
-    idCategory: idCategory
-  });
-  return res.status(200).send({
-    type: 'sucess',
-    message: `Item created successfully!`,
-    data: response
-  })
+  try {
+    const { name, price, image, description, stock, idCategory } = data;
+    console.log(data);
+    const response = await Item.create({
+      name: name,
+      price: price,
+      image: image,
+      description: description,
+      stock: stock,
+      idCategory: idCategory
+    });
+    return res.status(200).send({
+      type: 'sucess',
+      message: `Item created successfully!`,
+      data: response
+    })
+  } catch (error) {
+    return res.status(500).send({
+      type: 'error',
+      message: error.message,
+    })
+  }
 }
 
 const update = async (id, data, res) => {

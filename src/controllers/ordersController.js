@@ -7,11 +7,23 @@ import validateUser from "../utils/validateUser";
 
 const get = async (req, res) => {
   try {
-    let { id } = req.params;
+    let user = await validateUser.getUserByToken(req.headers.authorization)
+    if (!user) {
+      return res.status(500).send({
+        type: 'error',
+        message: `User not found!`,
+      })
+    }
+
+    let { id } = user.id;
     id = id ? id.toString().replace(/\D/g, '') : null; 
   
     if (!id) {
-      const response = await Order.findAll({})
+      const response = await Order.findAll({
+        where: {
+          idCustomer: user.id
+        }
+      })
       if (!response[0]) {
         return res.status(200).send({
           type: 'error',

@@ -5,10 +5,18 @@ import validateUser from "../utils/validateUser";
 
 const get = async (req, res) => {
   try {
+    let user = await validateUser.getUserByToken(req.headers.authorization)
+    if (!user) {
+      return res.status(500).send({
+        type: 'error',
+        message: `User not found!`,
+      })
+    }
+
     let { id } = req.params;
     id = id ? id.toString().replace(/\D/g, '') : null; 
   
-    if (!id) {
+    if (!user.id) {
       const response = await User.findAll({})
       if (!response[0]) {
         return res.status(200).send({
@@ -24,7 +32,7 @@ const get = async (req, res) => {
     }
     const response = await User.findOne({
       where: {
-        id: id
+        id: user.id
       }
     })
     if (!response){
@@ -35,7 +43,7 @@ const get = async (req, res) => {
     }
     return res.status(200).send({
       type: 'sucess',
-      message: `Data of user ${id} retrieved successfully!`,
+      message: `Data of user retrieved successfully!`,
       data: response
     })
   } catch (error) {
